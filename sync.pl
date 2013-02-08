@@ -8,9 +8,12 @@ my $primary = '1.2.3.4';
 my $secondary = '1.2.3.5';
 my $pfconf = '/etc/pf.conf';
 my $backupdir = '/root';
-my $time = `date +"%Y%m%d%H%M`;
+my $time = `date +"%Y%m%d%H%M"`;
 my $email_diff = 0; # Change to 1 to enable emailing of diff
 my $email_address = 'user@domain.tld'; # Change this to the user which should receive the diff
+my $git = `which git` or die "Can't find git!";
+my $pfctl = `which pfctl` or die "Can't find pfctl!";
+my $mail = `which mail` or die "Can't find mail client!";
 
 
 # See if other firewall is up
