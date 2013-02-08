@@ -8,7 +8,7 @@ my $primary = '1.2.3.4';
 my $secondary = '1.2.3.5';
 my $pfconf = '/etc/pf.conf';
 my $backupdir = '/root';
-my $time = `date +"%Y%m%d%H%M`
+my $time = `date +"%Y%m%d%H%M`;
 my $email_diff = 0; # Change to 1 to enable emailing of diff
 my $email_address = 'user@domain.tld'; # Change this to the user which should receive the diff
 
@@ -48,12 +48,14 @@ sub check_rule_state {
 
 # Back up secondary pf.conf
 sub backup_pf {
+  print_message('Backing up secondary pf.conf');
   `ssh root\@$secondary cp /etc/pf.conf $backupdir/pf.conf.$time` or die "Could not backup pf.conf on $secondary: $!";
   send_rules();
 }
 
 # Copy primary pf.conf to secondary
 sub send_rules {
+  print_message("Sending pf.conf to $secondary");
   `scp -q /etc/pf.conf root\@$secondary:/etc/pf.conf` or die "Could not send pf.conf to $secondary: $!";
   verify_rules();
 }
@@ -72,10 +74,11 @@ sub activate_rules {
 # Send email
 sub send_email {
   if ($email_diff) {
-    my $subject = `git log -1 --oneline`
-    `git diff HEAD^..HEAD /etc/pf.conf|mail -s "BSD Firewall Change - $body" $email_address`;
+    my $subject = `git log -1 --oneline`;
+    `git diff HEAD^..HEAD /etc/pf.conf|mail -s "BSD Firewall Change - $subject" $email_address`;
   }
 }
 
 sub print_message {
+  my $message = $_;
 }
